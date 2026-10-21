@@ -135,3 +135,24 @@ page('s6','s6 · ⑤ 立即运行','立即运行验证','立即运行 → 钉钉
 <div style="display:flex;padding:20px 0;border-bottom:2px solid var(--line);font-weight:700"><span style="flex:2">10-21 15:40</span><span style="flex:1">手动</span><span style="flex:1;text-align:right"><span class="mk" style="color:#0E8A6B;border-radius:8px;padding:0 8px">● 成功</span></span></div>
 <div style="display:flex;padding:20px 0;color:#A9B2C4"><span style="flex:2">下次 10-22 08:50</span><span style="flex:1">定时</span><span style="flex:1;text-align:right">待运行</span></div></div>""",330)}
 ''')
+
+# s7 合规提醒
+def warn(n, t, d, extra=''):
+    return f'<div style="background:#FFF6E0;border:3px solid #FFC94D;border-radius:28px;padding:30px 34px;display:flex;gap:28px;align-items:center;margin-bottom:28px"><span class="badge" style="width:84px;height:84px;background:var(--amber);font-size:44px;border-radius:50%;flex-shrink:0">{n}</span><div style="flex:1"><div style="font-size:40px;font-weight:800">{t}</div><div style="font-size:28px;color:var(--sub);margin-top:6px">{d}</div></div>{extra}</div>'
+PIN = '<svg width="110" height="110" viewBox="0 0 48 48" style="flex-shrink:0"><path d="M24 6c-7 0-12 5-12 12 0 9 12 22 12 22s12-13 12-22c0-7-5-12-12-12z" fill="#C9D3E3"/><circle cx="24" cy="18" r="5" fill="#fff"/><path d="M8 8L40 40M40 8L8 40" stroke="#EF4757" stroke-width="5" stroke-linecap="round"/></svg>'
+page('s7','s7 · 注意三点','注意三点','不代打卡 · 不虚拟定位 · 不外传', '<div style="padding-top:20px">' +
+ warn('1','不代打卡，不改定位','AI 只提醒；虚拟定位违规，钉钉会判异常', PIN) +
+ warn('2','Webhook 别外传','它等同密码，截图、发群都要打码') +
+ warn('3','本地任务电脑要开机','客户端别退出；常关机就用云端任务') + '</div>')
+
+# s8 结尾
+page('s8','s8 · 结尾','你只管伸手打卡','收藏 · 转给总忘打卡的同事', f'''
+<div style="position:absolute;left:170px;top:0;width:620px;height:820px;background:#fff;border:3px solid var(--line);border-radius:60px;box-shadow:0 24px 60px rgba(29,39,66,.12);overflow:hidden">
+ <div style="height:110px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;border-bottom:2px solid var(--line)">考勤打卡</div>
+ <div style="margin:70px auto 0;width:300px;height:300px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 26px var(--ms)"><svg width="150" height="150" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+ <div style="text-align:center;font-size:52px;font-weight:800;color:#0E8A6B;margin-top:60px">打卡正常</div>
+ <div style="text-align:center;font-size:30px;color:var(--sub);margin-top:10px">上班 08:53 · 已提醒 08:50</div>
+</div>
+<div style="position:absolute;left:0;right:0;top:880px;display:flex;justify-content:center;align-items:center;gap:30px">{WB.format(s=120,f=44)}<span style="font-size:60px;color:#A9B2C4">×</span>{DT.format(s=120,f=56)}</div>
+<div style="position:absolute;left:0;right:0;top:1030px;text-align:center"><span style="background:var(--bs);color:var(--blue);font-size:34px;font-weight:700;border-radius:999px;padding:12px 36px">到点就提醒 · 收藏转给爱忘打卡的同事</span></div>
+''')
