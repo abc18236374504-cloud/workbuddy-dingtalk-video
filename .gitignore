@@ -10,3 +10,4 @@ project/assets/
 project/renders/
 *.log
 .DS_Store
+__pycache__/

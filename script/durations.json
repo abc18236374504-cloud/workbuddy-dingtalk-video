@@ -2,79 +2,79 @@
  "fps": 30,
  "width": 1080,
  "height": 1920,
- "total": 108.25,
+ "total": 91.202,
  "segments": [
   {
    "id": "s0",
    "step": 0,
    "vo_start": 0.3,
-   "vo_duration": 14.3,
+   "vo_duration": 13.001,
    "start": 0,
-   "duration": 14.9
+   "duration": 13.601
   },
   {
    "id": "s1",
    "step": 1,
-   "vo_start": 15.05,
-   "vo_duration": 9.1,
-   "start": 14.9,
-   "duration": 9.55
+   "vo_start": 13.751,
+   "vo_duration": 5.833,
+   "start": 13.601,
+   "duration": 6.283
   },
   {
    "id": "s2",
    "step": 2,
-   "vo_start": 24.6,
-   "vo_duration": 13.9,
-   "start": 24.45,
-   "duration": 14.35
+   "vo_start": 20.034,
+   "vo_duration": 11.275,
+   "start": 19.884,
+   "duration": 11.725
   },
   {
    "id": "s3",
    "step": 3,
-   "vo_start": 38.95,
-   "vo_duration": 9.5,
-   "start": 38.8,
-   "duration": 9.95
+   "vo_start": 31.759,
+   "vo_duration": 7.337,
+   "start": 31.609,
+   "duration": 7.787
   },
   {
    "id": "s4",
    "step": 4,
-   "vo_start": 48.9,
-   "vo_duration": 12.6,
-   "start": 48.75,
-   "duration": 13.05
+   "vo_start": 39.546,
+   "vo_duration": 9.325,
+   "start": 39.396,
+   "duration": 9.775
   },
   {
    "id": "s5",
    "step": 5,
-   "vo_start": 61.95,
-   "vo_duration": 13.0,
-   "start": 61.8,
-   "duration": 13.45
+   "vo_start": 49.321,
+   "vo_duration": 12.155,
+   "start": 49.171,
+   "duration": 12.605
   },
   {
    "id": "s6",
    "step": 6,
-   "vo_start": 75.4,
-   "vo_duration": 8.4,
-   "start": 75.25,
-   "duration": 8.85
+   "vo_start": 61.926,
+   "vo_duration": 7.723,
+   "start": 61.776,
+   "duration": 8.173
   },
   {
    "id": "s7",
    "step": 0,
-   "vo_start": 84.25,
-   "vo_duration": 14.7,
-   "start": 84.1,
-   "duration": 15.15
+   "vo_start": 70.099,
+   "vo_duration": 12.548,
+   "start": 69.949,
+   "duration": 12.998
   },
   {
    "id": "s8",
    "step": 0,
-   "vo_start": 99.4,
-   "vo_duration": 7.8,
-   "start": 99.25,
-   "duration": 9.0
+   "vo_start": 83.097,
+   "vo_duration": 7.055,
+   "start": 82.947,
+   "duration": 8.255
   }
  ]
 }

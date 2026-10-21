@@ -100,7 +100,8 @@ for i, g in enumerate(SEGS):
 # per-scene UI actions (cursor-ish highlights)
 def at(sid, off):
     g = next(x for x in SEGS if x["id"] == sid)
-    return round(g["vo_start"] + off, 3)
+    k = min(1.0, g["vo_duration"] / script[sid]["est_sec"])  # cues were authored against est_sec; squeeze to real VO
+    return round(g["vo_start"] + off * k, 3)
 
 js += [
     f'tl.from("#s0-clock",{{scale:0.6,opacity:0,duration:0.5,ease:"back.out(2)"}},{at("s0",1.0)});',
