@@ -67,3 +67,16 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0b1020}
 .ci{display:flex;align-items:center;gap:28px;font-size:58px;font-weight:800;padding:34px 40px;border-radius:30px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15)}
 .ci span{width:84px;height:84px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:52px}
 .follow{margin-top:30px;text-align:center;font-size:56px;font-weight:900;padding:34px;border-radius:30px;background:linear-gradient(90deg,#f43f5e,#f97316)}
+.badge.warn{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 20px 50px rgba(239,68,68,.45)}
+.warnline{width:100%;text-align:center;font-size:54px;font-weight:900;color:#fecaca}
+.inp.mono{font-size:28px;font-family:monospace;word-break:break-all;color:#334155}
+.grow{flex:1}.nbtn{font-size:32px;font-weight:800;color:#fff;background:#2563eb;padding:12px 26px;border-radius:14px}.nbtn.arr{padding:12px 18px}
+.menu{opacity:0;transform:translateY(-20px);align-self:flex-end;width:380px;background:#fff;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.18);padding:12px}
+.mi{font-size:36px;font-weight:700;padding:20px;border-radius:14px}
+.pbox.small{font-size:46px}
+.chips.wk span{padding:16px 22px}
+.runlog{opacity:0;margin:60px 30px 0;background:#fff;border-radius:22px;padding:26px;font-size:32px;font-weight:700;color:#334155;display:flex;justify-content:space-between}.okk{color:#16a34a}
+.ci.bad span{background:#ef4444}
+.note{text-align:center;font-size:38px;color:#cbd5e1;font-weight:700}
+.ci span{flex-shrink:0}
+.win .form{gap:12px}.win .form .inp{padding:18px 24px}
