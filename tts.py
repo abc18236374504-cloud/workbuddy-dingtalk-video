@@ -8,8 +8,9 @@ key = os.environ.get("TTS_KEY")
 if not key and os.path.exists(os.path.join(ROOT, ".env")):
     for l in open(os.path.join(ROOT, ".env")):
         if l.startswith("TTS_KEY="): key = l.split("=", 1)[1].strip()
-SPEED = float(os.environ.get("TTS_SPEED", "1.3")); GAP = 0.45; LEAD = 0.3
-segs = json.load(open(os.path.join(ROOT, "script", "script.json")))
+SPEED = float(os.environ.get("TTS_SPEED", "1.25")); GAP = 0.45; LEAD = 0.3
+import sys; sys.path.insert(0, os.path.join(ROOT, "script")); from load import load
+segs = load(ROOT)
 def dur(p): return float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",p]))
 out = []; t = LEAD
 for s in segs:

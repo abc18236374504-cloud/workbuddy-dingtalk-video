@@ -11,7 +11,8 @@ shutil.copy(os.path.join(ROOT, "audio", "voice.wav"), os.path.join(P, "assets", 
 for f in os.listdir(os.path.join(ROOT, "assets")):
     shutil.copy(os.path.join(ROOT, "assets", f), os.path.join(P, "assets", f))
 
-script = {s["id"]: s for s in json.load(open(os.path.join(ROOT, "script", "script.json")))}
+import sys; sys.path.insert(0, os.path.join(ROOT, "script")); from load import load
+script = {s["id"]: s for s in load(ROOT)}
 D = json.load(open(os.path.join(ROOT, "script", "durations.json")))
 TOTAL = D["total"]
 SEGS = D["segments"]
