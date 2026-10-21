@@ -9,7 +9,12 @@ P = os.path.join(ROOT, "project")
 os.makedirs(os.path.join(P, "assets"), exist_ok=True)
 shutil.copy(os.path.join(ROOT, "audio", "voice.wav"), os.path.join(P, "assets", "voice.wav"))
 for f in os.listdir(os.path.join(ROOT, "assets")):
-    shutil.copy(os.path.join(ROOT, "assets", f), os.path.join(P, "assets", f))
+    src, dst = os.path.join(ROOT, "assets", f), os.path.join(P, "assets", f)
+    if os.path.isdir(src):
+        if f == "ui":
+            shutil.copytree(src, dst, dirs_exist_ok=True, ignore=shutil.ignore_patterns("src_*", "overview*"))
+    else:
+        shutil.copy(src, dst)
 
 import sys; sys.path.insert(0, os.path.join(ROOT, "script")); from load import load
 script = {s["id"]: s for s in load(ROOT)}
@@ -68,6 +73,9 @@ MOCK = {
 
 S4_TEXT = "每个工作日早上 8:50 和晚上 18:00，用 curl 往这个钉钉 Webhook 发一条打卡提醒，内容带上「打卡」两个字。"
 
+# A 版界面素材：assets/ui/sN.png 存在就整屏用它（自带标题区，底部 300px 留字幕），MOCK 隐藏保留 id 供时间线引用
+UI = {sid for sid in MOCK if os.path.exists(os.path.join(ROOT, "assets", "ui", f"{sid}.png"))}
+
 scenes_html = []
 js = []
 for i, g in enumerate(SEGS):
@@ -76,6 +84,21 @@ for i, g in enumerate(SEGS):
     sid = g["id"]
     badge = f'<div class="badge" id="{sid}-badge"><span>STEP</span><b>{s["step"]}</b></div>' if s["step"] else f'<div class="badge intro {"warn" if s.get("badge")=="!" else ""}" id="{sid}-badge"><b>{html.escape(s.get("badge","▶"))}</b></div>'
     chars = "".join(f'<span class="ch" id="{sid}-c{k}">{html.escape(c)}</span>' for k, c in enumerate(s["vo"]))
+    if sid in UI:
+        scenes_html.append(f'''
+    <section class="clip scene ui" id="{sid}" data-start="{st}" data-duration="{du}" data-track-index="1">
+      <div class="uibg"><img id="{sid}-cam" src="assets/ui/{sid}.png" alt=""></div>
+      <div class="mockhide"><span id="{sid}-badge"></span><span id="{sid}-title"></span><span id="{sid}-chip"></span>{MOCK[sid]}</div>
+      <div class="sub"><p>{chars}<span class="caret" id="{sid}-caret"></span></p></div>
+    </section>''')
+        js.append(f'tl.fromTo("#{sid}-cam",{{scale:1.0}},{{scale:1.04,duration:{du},ease:"sine.inOut"}},{st});')
+        js.append(f'tl.from("#{sid}-cam",{{opacity:0,duration:0.35,ease:"power2.out"}},{st});')
+        n = len(s["vo"])
+        for k in range(n):
+            js.append(f'tl.set("#{sid}-c{k}",{{display:"inline"}},{round(vs + vd*0.92*k/n,3)});')
+        js.append(f'tl.to("#{sid}-caret",{{opacity:0,duration:0.01}},{round(vs+vd,3)});')
+        js.append(f'tl.to("#{sid}",{{opacity:0,duration:0.25}},{round(st+du-0.25,3)});')
+        continue
     scenes_html.append(f'''
     <section class="clip scene" id="{sid}" data-start="{st}" data-duration="{du}" data-track-index="1">
       <div class="head">{badge}<h2 id="{sid}-title">{html.escape(s["title"])}</h2></div>
