@@ -1,0 +1,64 @@
+{
+ "fps": 30,
+ "width": 1080,
+ "height": 1920,
+ "total": 53.412,
+ "segments": [
+  {
+   "id": "s0",
+   "step": 0,
+   "start": 0,
+   "vo_start": 0.3,
+   "vo_duration": 6.774,
+   "duration": 7.374
+  },
+  {
+   "id": "s1",
+   "step": 1,
+   "start": 7.374,
+   "vo_start": 7.524,
+   "vo_duration": 4.862,
+   "duration": 5.312
+  },
+  {
+   "id": "s2",
+   "step": 2,
+   "start": 12.686,
+   "vo_start": 12.836,
+   "vo_duration": 7.45,
+   "duration": 7.9
+  },
+  {
+   "id": "s3",
+   "step": 3,
+   "start": 20.586,
+   "vo_start": 20.736,
+   "vo_duration": 6.855,
+   "duration": 7.305
+  },
+  {
+   "id": "s4",
+   "step": 4,
+   "start": 27.891,
+   "vo_start": 28.041,
+   "vo_duration": 8.308,
+   "duration": 8.758
+  },
+  {
+   "id": "s5",
+   "step": 5,
+   "start": 36.649,
+   "vo_start": 36.799,
+   "vo_duration": 7.209,
+   "duration": 7.659
+  },
+  {
+   "id": "s6",
+   "step": 6,
+   "start": 44.308,
+   "vo_start": 44.458,
+   "vo_duration": 7.904,
+   "duration": 9.104
+  }
+ ]
+}

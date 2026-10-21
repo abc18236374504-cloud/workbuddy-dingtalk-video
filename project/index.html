@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN" data-resolution="portrait">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Noto Sans SC";src:url("assets/NotoSansSC-subset.ttf") format("truetype");font-weight:100 900;font-display:block}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0b1020}
+#root{position:relative;width:1080px;height:1920px;font-family:"Noto Sans SC",sans-serif;color:#f1f5f9}
+.bg{position:absolute;inset:0;background:radial-gradient(1200px 900px at 20% 10%,#1e3a8a 0%,transparent 60%),radial-gradient(1000px 800px at 90% 90%,#0e7490 0%,transparent 60%),#0b1020}
+.scene{position:absolute;inset:0}
+.head{position:absolute;top:150px;left:80px;right:80px;display:flex;align-items:center;gap:32px}
+.badge{width:150px;height:150px;border-radius:40px;background:linear-gradient(135deg,#2563eb,#0e7490);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(59,130,246,.45)}
+.badge span{font-size:26px;font-weight:800;letter-spacing:4px}
+.badge b{font-size:78px;line-height:1;font-weight:900}
+.badge.intro b{font-size:64px}
+.head h2{font-size:76px;font-weight:900;line-height:1.15}
+.stage{position:absolute;top:360px;left:0;right:0;height:900px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cam{width:920px;display:flex;justify-content:center;transform-origin:50% 50%}
+.chip{position:absolute;top:1300px;left:80px;right:80px;text-align:center;font-size:44px;font-weight:700;padding:26px 30px;border-radius:28px;background:rgba(250,204,21,.14);border:3px solid #facc15;color:#fde68a}
+.sub{position:absolute;top:1440px;left:70px;right:70px;height:290px;padding:30px 36px;border-radius:28px;background:rgba(0,0,0,.45)}
+.sub p{font-size:48px;line-height:1.45;font-weight:700}
+.ch{display:none}.ch2{opacity:0}
+.caret{display:inline-block;width:6px;height:46px;background:#facc15;vertical-align:-8px;margin-left:4px}
+.hud{position:absolute;left:80px;right:80px;bottom:90px}
+.dots{display:flex;justify-content:space-between;margin-bottom:22px}
+.dots i{font-style:normal;width:62px;height:62px;border-radius:50%;background:#334155;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800}
+.track{height:14px;border-radius:7px;background:#1e293b;overflow:hidden}
+#pbar{height:100%;width:100%;background:linear-gradient(90deg,#3b82f6,#22d3ee);transform-origin:0 50%}
+/* windows */
+.win{width:900px;border-radius:30px;background:#f8fafc;color:#0f172a;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.5)}
+.bar{height:70px;background:#e2e8f0;display:flex;align-items:center;gap:14px;padding:0 26px}
+.bar b{width:20px;height:20px;border-radius:50%;background:#f87171}.bar b:nth-child(2){background:#fbbf24}.bar b:nth-child(3){background:#34d399}
+.bar span{margin-left:20px;font-size:32px;font-weight:700;color:#334155}
+.wbody{padding:44px;min-height:640px}
+.login{display:flex;flex-direction:column;align-items:center;gap:30px}
+.lt{font-size:46px;font-weight:800}
+.qr{display:grid;width:400px;height:400px;gap:0;padding:20px;background:#fff;border:3px solid #e2e8f0;border-radius:20px}
+.qr i{background:#fff}.qr i.on{background:#0f172a}
+.ok{opacity:0;transform:scale(.6);font-size:44px;font-weight:800;color:#16a34a}
+.split{display:flex;gap:30px}
+.side{width:230px;display:flex;flex-direction:column;gap:14px}
+.side p{font-size:36px;padding:18px 22px;border-radius:16px;color:#475569;font-weight:700}
+.list{flex:1;display:flex;flex-direction:column;gap:20px}
+.row{display:flex;align-items:center;gap:20px;font-size:38px;font-weight:700;padding:22px;border-radius:20px;background:#fff;border:2px solid #e2e8f0}
+.row em{margin-left:auto;font-style:normal;font-size:28px;color:#64748b}
+.row em.on{opacity:0;color:#16a34a;font-weight:800}
+.ic{width:66px;height:66px;border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:900}
+.ic.g{background:#22c55e}.ic.b{background:#2563eb}.ic.d{background:#1677ff}.ic.f{background:#00b8a9}
+.form{display:flex;flex-direction:column;gap:18px}
+.form label{font-size:32px;color:#64748b;font-weight:700}
+.inp{font-size:44px;font-weight:800;padding:24px 28px;border-radius:18px;background:#fff;border:2px solid #cbd5e1}
+.inp.big{font-size:110px;text-align:center;color:#1d4ed8}
+.chips{display:flex;gap:18px}.chips span{font-size:36px;padding:16px 30px;border-radius:40px;background:#e2e8f0;font-weight:700}.chips span.on{background:#2563eb;color:#fff}
+.prompt{display:flex;flex-direction:column;gap:30px}
+.pbox{min-height:420px;font-size:52px;line-height:1.55;font-weight:700;padding:34px;border-radius:24px;background:#fff;border:3px solid #93c5fd}
+.send{align-self:flex-end;font-size:42px;font-weight:800;color:#fff;background:#2563eb;padding:20px 50px;border-radius:20px}
+.hero{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:40px;width:900px}
+.logo{width:240px;height:240px;border-radius:60px;display:flex;align-items:center;justify-content:center;font-size:130px;font-weight:900;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.logo.wb{background:linear-gradient(135deg,#7c3aed,#3b82f6)}.logo.dd{background:#1677ff}
+.x{font-size:100px;font-weight:300}
+.clock{width:100%;text-align:center;font-size:220px;font-weight:900;letter-spacing:6px;color:#fff;margin-top:30px}
+.hero-sub{font-size:46px;color:#bae6fd;font-weight:700}
+.phone{position:relative;width:520px;height:880px;border-radius:70px;background:#f1f5f9;border:16px solid #111827;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55);color:#0f172a}
+.notch{width:200px;height:36px;background:#111827;border-radius:0 0 24px 24px;margin:0 auto}
+.noti{margin:40px 24px 0;display:flex;gap:18px;align-items:center;background:#fff;border-radius:26px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.noti b{font-size:28px}.noti p{font-size:30px;color:#334155;font-weight:700}
+.punch{margin:110px auto 0;width:300px;height:300px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(37,99,235,.5)}
+.pin{font-size:44px;font-weight:900}.pt{font-size:36px;opacity:.9}
+.done{opacity:0;transform:scale(.6);text-align:center;margin-top:50px;font-size:48px;font-weight:900;color:#16a34a}
+.check{width:900px;display:flex;flex-direction:column;gap:34px}
+.ci{display:flex;align-items:center;gap:28px;font-size:58px;font-weight:800;padding:34px 40px;border-radius:30px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15)}
+.ci span{width:84px;height:84px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:52px}
+.follow{margin-top:30px;text-align:center;font-size:56px;font-weight:900;padding:34px;border-radius:30px;background:linear-gradient(90deg,#f43f5e,#f97316)}
+
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="53.412" data-width="1080" data-height="1920">
+  <div class="bg"></div>
+  
+    <section class="clip scene" id="s0" data-start="0" data-duration="7.374" data-track-index="1">
+      <div class="head"><div class="badge intro" id="s0-badge"><b>▶</b></div><h2 id="s0-title">两分钟搞定钉钉打卡</h2></div>
+      <div class="stage"><div class="cam" id="s0-cam"><div class="hero">
+      <div class="logo wb">W</div><div class="x">×</div><div class="logo dd">钉</div>
+      <div class="clock" id="s0-clock">08:45</div>
+      <div class="hero-sub">工作日 · 自动提醒 · 一键打卡</div></div></div></div>
+      <div class="chip" id="s0-chip">WorkBuddy × 钉钉</div>
+      <div class="sub"><p><span class="ch" id="s0-c0">总</span><span class="ch" id="s0-c1">忘</span><span class="ch" id="s0-c2">记</span><span class="ch" id="s0-c3">钉</span><span class="ch" id="s0-c4">钉</span><span class="ch" id="s0-c5">打</span><span class="ch" id="s0-c6">卡</span><span class="ch" id="s0-c7">？</span><span class="ch" id="s0-c8">用</span><span class="ch" id="s0-c9">腾</span><span class="ch" id="s0-c10">讯</span><span class="ch" id="s0-c11"> </span><span class="ch" id="s0-c12">W</span><span class="ch" id="s0-c13">o</span><span class="ch" id="s0-c14">r</span><span class="ch" id="s0-c15">k</span><span class="ch" id="s0-c16">B</span><span class="ch" id="s0-c17">u</span><span class="ch" id="s0-c18">d</span><span class="ch" id="s0-c19">d</span><span class="ch" id="s0-c20">y</span><span class="ch" id="s0-c21">，</span><span class="ch" id="s0-c22">两</span><span class="ch" id="s0-c23">分</span><span class="ch" id="s0-c24">钟</span><span class="ch" id="s0-c25">设</span><span class="ch" id="s0-c26">好</span><span class="ch" id="s0-c27">，</span><span class="ch" id="s0-c28">每</span><span class="ch" id="s0-c29">天</span><span class="ch" id="s0-c30">自</span><span class="ch" id="s0-c31">动</span><span class="ch" id="s0-c32">提</span><span class="ch" id="s0-c33">醒</span><span class="ch" id="s0-c34">你</span><span class="ch" id="s0-c35">打</span><span class="ch" id="s0-c36">卡</span><span class="ch" id="s0-c37">。</span><span class="caret" id="s0-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s1" data-start="7.374" data-duration="5.312" data-track-index="1">
+      <div class="head"><div class="badge" id="s1-badge"><span>STEP</span><b>1</b></div><h2 id="s1-title">安装并登录 WorkBuddy</h2></div>
+      <div class="stage"><div class="cam" id="s1-cam"><div class="win "><div class="bar"><b></b><b></b><b></b><span>WorkBuddy</span></div><div class="wbody"><div class="login"><div class="lt">微信扫码登录</div><div class="qr" style="grid-template-columns:repeat(21,1fr)"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class="on"></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class=""></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></div><div class="ok" id="s1-ok">✓ 登录成功</div></div></div></div></div></div>
+      <div class="chip" id="s1-chip">官网下载 → 微信扫码登录</div>
+      <div class="sub"><p><span class="ch" id="s1-c0">第</span><span class="ch" id="s1-c1">一</span><span class="ch" id="s1-c2">步</span><span class="ch" id="s1-c3">，</span><span class="ch" id="s1-c4">到</span><span class="ch" id="s1-c5"> </span><span class="ch" id="s1-c6">W</span><span class="ch" id="s1-c7">o</span><span class="ch" id="s1-c8">r</span><span class="ch" id="s1-c9">k</span><span class="ch" id="s1-c10">B</span><span class="ch" id="s1-c11">u</span><span class="ch" id="s1-c12">d</span><span class="ch" id="s1-c13">d</span><span class="ch" id="s1-c14">y</span><span class="ch" id="s1-c15"> </span><span class="ch" id="s1-c16">官</span><span class="ch" id="s1-c17">网</span><span class="ch" id="s1-c18">下</span><span class="ch" id="s1-c19">载</span><span class="ch" id="s1-c20">安</span><span class="ch" id="s1-c21">装</span><span class="ch" id="s1-c22">，</span><span class="ch" id="s1-c23">用</span><span class="ch" id="s1-c24">微</span><span class="ch" id="s1-c25">信</span><span class="ch" id="s1-c26">扫</span><span class="ch" id="s1-c27">码</span><span class="ch" id="s1-c28">登</span><span class="ch" id="s1-c29">录</span><span class="ch" id="s1-c30">。</span><span class="caret" id="s1-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s2" data-start="12.686" data-duration="7.9" data-track-index="1">
+      <div class="head"><div class="badge" id="s2-badge"><span>STEP</span><b>2</b></div><h2 id="s2-title">连接钉钉</h2></div>
+      <div class="stage"><div class="cam" id="s2-cam"><div class="win "><div class="bar"><b></b><b></b><b></b><span>WorkBuddy · 设置</span></div><div class="wbody"><div class="split"><div class="side"><p>账户</p><p class="act" id="s2-conn">连接器</p><p>自动化</p><p>技能</p></div>
+      <div class="list"><div class="row"><span class="ic g">微</span>微信<em>未连接</em></div>
+      <div class="row"><span class="ic b">企</span>企业微信<em>未连接</em></div>
+      <div class="row hl" id="s2-dd"><span class="ic d">钉</span>钉钉<em class="on" id="s2-on">已连接</em></div>
+      <div class="row"><span class="ic f">飞</span>飞书<em>未连接</em></div></div></div></div></div></div></div>
+      <div class="chip" id="s2-chip">设置 → 连接器 → 钉钉 → 扫码授权</div>
+      <div class="sub"><p><span class="ch" id="s2-c0">第</span><span class="ch" id="s2-c1">二</span><span class="ch" id="s2-c2">步</span><span class="ch" id="s2-c3">，</span><span class="ch" id="s2-c4">点</span><span class="ch" id="s2-c5">左</span><span class="ch" id="s2-c6">下</span><span class="ch" id="s2-c7">角</span><span class="ch" id="s2-c8">设</span><span class="ch" id="s2-c9">置</span><span class="ch" id="s2-c10">，</span><span class="ch" id="s2-c11">打</span><span class="ch" id="s2-c12">开</span><span class="ch" id="s2-c13">连</span><span class="ch" id="s2-c14">接</span><span class="ch" id="s2-c15">器</span><span class="ch" id="s2-c16">，</span><span class="ch" id="s2-c17">找</span><span class="ch" id="s2-c18">到</span><span class="ch" id="s2-c19">钉</span><span class="ch" id="s2-c20">钉</span><span class="ch" id="s2-c21">，</span><span class="ch" id="s2-c22">扫</span><span class="ch" id="s2-c23">码</span><span class="ch" id="s2-c24">授</span><span class="ch" id="s2-c25">权</span><span class="ch" id="s2-c26">，</span><span class="ch" id="s2-c27">显</span><span class="ch" id="s2-c28">示</span><span class="ch" id="s2-c29">已</span><span class="ch" id="s2-c30">连</span><span class="ch" id="s2-c31">接</span><span class="ch" id="s2-c32">就</span><span class="ch" id="s2-c33">成</span><span class="ch" id="s2-c34">功</span><span class="ch" id="s2-c35">了</span><span class="ch" id="s2-c36">。</span><span class="caret" id="s2-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s3" data-start="20.586" data-duration="7.305" data-track-index="1">
+      <div class="head"><div class="badge" id="s3-badge"><span>STEP</span><b>3</b></div><h2 id="s3-title">新建自动化任务</h2></div>
+      <div class="stage"><div class="cam" id="s3-cam"><div class="win "><div class="bar"><b></b><b></b><b></b><span>自动化 · 新建任务</span></div><div class="wbody"><div class="form"><label>任务名称</label><div class="inp">钉钉打卡提醒</div>
+      <label>重复</label><div class="chips"><span class="on">工作日</span><span>每天</span><span>每周</span></div>
+      <label>触发时间</label><div class="inp big hl" id="s3-time">08:45</div></div></div></div></div></div>
+      <div class="chip" id="s3-chip">自动化 → 新建 → 工作日 08:45</div>
+      <div class="sub"><p><span class="ch" id="s3-c0">第</span><span class="ch" id="s3-c1">三</span><span class="ch" id="s3-c2">步</span><span class="ch" id="s3-c3">，</span><span class="ch" id="s3-c4">打</span><span class="ch" id="s3-c5">开</span><span class="ch" id="s3-c6">自</span><span class="ch" id="s3-c7">动</span><span class="ch" id="s3-c8">化</span><span class="ch" id="s3-c9">，</span><span class="ch" id="s3-c10">新</span><span class="ch" id="s3-c11">建</span><span class="ch" id="s3-c12">任</span><span class="ch" id="s3-c13">务</span><span class="ch" id="s3-c14">，</span><span class="ch" id="s3-c15">触</span><span class="ch" id="s3-c16">发</span><span class="ch" id="s3-c17">时</span><span class="ch" id="s3-c18">间</span><span class="ch" id="s3-c19">选</span><span class="ch" id="s3-c20">每</span><span class="ch" id="s3-c21">个</span><span class="ch" id="s3-c22">工</span><span class="ch" id="s3-c23">作</span><span class="ch" id="s3-c24">日</span><span class="ch" id="s3-c25">早</span><span class="ch" id="s3-c26">上</span><span class="ch" id="s3-c27">八</span><span class="ch" id="s3-c28">点</span><span class="ch" id="s3-c29">四</span><span class="ch" id="s3-c30">十</span><span class="ch" id="s3-c31">五</span><span class="ch" id="s3-c32">。</span><span class="caret" id="s3-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s4" data-start="27.891" data-duration="8.758" data-track-index="1">
+      <div class="head"><div class="badge" id="s4-badge"><span>STEP</span><b>4</b></div><h2 id="s4-title">写一句指令</h2></div>
+      <div class="stage"><div class="cam" id="s4-cam"><div class="win "><div class="bar"><b></b><b></b><b></b><span>自动化 · 任务指令</span></div><div class="wbody"><div class="prompt"><div class="pbox" id="s4-box"><span class="ch2" id="s4-t0">发</span><span class="ch2" id="s4-t1">钉</span><span class="ch2" id="s4-t2">钉</span><span class="ch2" id="s4-t3">消</span><span class="ch2" id="s4-t4">息</span><span class="ch2" id="s4-t5">提</span><span class="ch2" id="s4-t6">醒</span><span class="ch2" id="s4-t7">我</span><span class="ch2" id="s4-t8">上</span><span class="ch2" id="s4-t9">班</span><span class="ch2" id="s4-t10">打</span><span class="ch2" id="s4-t11">卡</span><span class="ch2" id="s4-t12">；</span><span class="ch2" id="s4-t13">1</span><span class="ch2" id="s4-t14">5</span><span class="ch2" id="s4-t15"> </span><span class="ch2" id="s4-t16">分</span><span class="ch2" id="s4-t17">钟</span><span class="ch2" id="s4-t18">后</span><span class="ch2" id="s4-t19">还</span><span class="ch2" id="s4-t20">没</span><span class="ch2" id="s4-t21">打</span><span class="ch2" id="s4-t22">卡</span><span class="ch2" id="s4-t23">，</span><span class="ch2" id="s4-t24">再</span><span class="ch2" id="s4-t25">发</span><span class="ch2" id="s4-t26">邮</span><span class="ch2" id="s4-t27">件</span><span class="ch2" id="s4-t28">提</span><span class="ch2" id="s4-t29">醒</span><span class="ch2" id="s4-t30">我</span><span class="ch2" id="s4-t31">。</span></div><div class="send" id="s4-send">保存 ▶</div></div></div></div></div></div>
+      <div class="chip" id="s4-chip">发钉钉提醒我打卡；15 分钟未打卡再发邮件</div>
+      <div class="sub"><p><span class="ch" id="s4-c0">第</span><span class="ch" id="s4-c1">四</span><span class="ch" id="s4-c2">步</span><span class="ch" id="s4-c3">，</span><span class="ch" id="s4-c4">输</span><span class="ch" id="s4-c5">入</span><span class="ch" id="s4-c6">一</span><span class="ch" id="s4-c7">句</span><span class="ch" id="s4-c8">指</span><span class="ch" id="s4-c9">令</span><span class="ch" id="s4-c10">：</span><span class="ch" id="s4-c11">发</span><span class="ch" id="s4-c12">钉</span><span class="ch" id="s4-c13">钉</span><span class="ch" id="s4-c14">消</span><span class="ch" id="s4-c15">息</span><span class="ch" id="s4-c16">提</span><span class="ch" id="s4-c17">醒</span><span class="ch" id="s4-c18">我</span><span class="ch" id="s4-c19">上</span><span class="ch" id="s4-c20">班</span><span class="ch" id="s4-c21">打</span><span class="ch" id="s4-c22">卡</span><span class="ch" id="s4-c23">，</span><span class="ch" id="s4-c24">十</span><span class="ch" id="s4-c25">五</span><span class="ch" id="s4-c26">分</span><span class="ch" id="s4-c27">钟</span><span class="ch" id="s4-c28">后</span><span class="ch" id="s4-c29">还</span><span class="ch" id="s4-c30">没</span><span class="ch" id="s4-c31">打</span><span class="ch" id="s4-c32">卡</span><span class="ch" id="s4-c33">，</span><span class="ch" id="s4-c34">再</span><span class="ch" id="s4-c35">发</span><span class="ch" id="s4-c36">邮</span><span class="ch" id="s4-c37">件</span><span class="ch" id="s4-c38">提</span><span class="ch" id="s4-c39">醒</span><span class="ch" id="s4-c40">我</span><span class="ch" id="s4-c41">。</span><span class="caret" id="s4-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s5" data-start="36.649" data-duration="7.659" data-track-index="1">
+      <div class="head"><div class="badge" id="s5-badge"><span>STEP</span><b>5</b></div><h2 id="s5-title">测试并打卡</h2></div>
+      <div class="stage"><div class="cam" id="s5-cam"><div class="phone"><div class="notch"></div><div class="noti" id="s5-noti"><span class="ic d">钉</span><div><b>WorkBuddy 机器人</b><p>08:45 该上班打卡啦！</p></div></div>
+      <div class="punch" id="s5-punch"><div class="pin">上班打卡</div><div class="pt">08:46</div></div><div class="done" id="s5-done">✓ 打卡成功</div></div></div></div>
+      <div class="chip" id="s5-chip">立即运行 → 收到提醒 → 考勤打卡</div>
+      <div class="sub"><p><span class="ch" id="s5-c0">第</span><span class="ch" id="s5-c1">五</span><span class="ch" id="s5-c2">步</span><span class="ch" id="s5-c3">，</span><span class="ch" id="s5-c4">保</span><span class="ch" id="s5-c5">存</span><span class="ch" id="s5-c6">后</span><span class="ch" id="s5-c7">点</span><span class="ch" id="s5-c8">立</span><span class="ch" id="s5-c9">即</span><span class="ch" id="s5-c10">运</span><span class="ch" id="s5-c11">行</span><span class="ch" id="s5-c12">测</span><span class="ch" id="s5-c13">试</span><span class="ch" id="s5-c14">。</span><span class="ch" id="s5-c15">钉</span><span class="ch" id="s5-c16">钉</span><span class="ch" id="s5-c17">收</span><span class="ch" id="s5-c18">到</span><span class="ch" id="s5-c19">提</span><span class="ch" id="s5-c20">醒</span><span class="ch" id="s5-c21">，</span><span class="ch" id="s5-c22">点</span><span class="ch" id="s5-c23">进</span><span class="ch" id="s5-c24">考</span><span class="ch" id="s5-c25">勤</span><span class="ch" id="s5-c26">打</span><span class="ch" id="s5-c27">卡</span><span class="ch" id="s5-c28">，</span><span class="ch" id="s5-c29">一</span><span class="ch" id="s5-c30">键</span><span class="ch" id="s5-c31">完</span><span class="ch" id="s5-c32">成</span><span class="ch" id="s5-c33">。</span><span class="caret" id="s5-caret"></span></p></div>
+    </section>
+
+    <section class="clip scene" id="s6" data-start="44.308" data-duration="9.104" data-track-index="1">
+      <div class="head"><div class="badge" id="s6-badge"><span>STEP</span><b>6</b></div><h2 id="s6-title">注意事项</h2></div>
+      <div class="stage"><div class="cam" id="s6-cam"><div class="check"><div class="ci" id="s6-a"><span>✓</span>电脑保持开机</div><div class="ci" id="s6-b"><span>✓</span>WorkBuddy 保持运行</div><div class="ci" id="s6-c"><span>✓</span>每天 08:45 准时提醒</div><div class="follow" id="s6-f">关注我 · 学更多 AI 办公技巧</div></div></div></div>
+      <div class="chip" id="s6-chip">电脑开机 · WorkBuddy 保持运行</div>
+      <div class="sub"><p><span class="ch" id="s6-c0">记</span><span class="ch" id="s6-c1">得</span><span class="ch" id="s6-c2">电</span><span class="ch" id="s6-c3">脑</span><span class="ch" id="s6-c4">保</span><span class="ch" id="s6-c5">持</span><span class="ch" id="s6-c6">开</span><span class="ch" id="s6-c7">机</span><span class="ch" id="s6-c8">，</span><span class="ch" id="s6-c9">W</span><span class="ch" id="s6-c10">o</span><span class="ch" id="s6-c11">r</span><span class="ch" id="s6-c12">k</span><span class="ch" id="s6-c13">B</span><span class="ch" id="s6-c14">u</span><span class="ch" id="s6-c15">d</span><span class="ch" id="s6-c16">d</span><span class="ch" id="s6-c17">y</span><span class="ch" id="s6-c18"> </span><span class="ch" id="s6-c19">保</span><span class="ch" id="s6-c20">持</span><span class="ch" id="s6-c21">运</span><span class="ch" id="s6-c22">行</span><span class="ch" id="s6-c23">，</span><span class="ch" id="s6-c24">提</span><span class="ch" id="s6-c25">醒</span><span class="ch" id="s6-c26">才</span><span class="ch" id="s6-c27">会</span><span class="ch" id="s6-c28">准</span><span class="ch" id="s6-c29">时</span><span class="ch" id="s6-c30">到</span><span class="ch" id="s6-c31">。</span><span class="ch" id="s6-c32">关</span><span class="ch" id="s6-c33">注</span><span class="ch" id="s6-c34">我</span><span class="ch" id="s6-c35">，</span><span class="ch" id="s6-c36">学</span><span class="ch" id="s6-c37">更</span><span class="ch" id="s6-c38">多</span><span class="ch" id="s6-c39"> </span><span class="ch" id="s6-c40">A</span><span class="ch" id="s6-c41">I</span><span class="ch" id="s6-c42"> </span><span class="ch" id="s6-c43">办</span><span class="ch" id="s6-c44">公</span><span class="ch" id="s6-c45">技</span><span class="ch" id="s6-c46">巧</span><span class="ch" id="s6-c47">。</span><span class="caret" id="s6-caret"></span></p></div>
+    </section>
+  <div class="hud"><div class="dots"><i id="dot1">1</i><i id="dot2">2</i><i id="dot3">3</i><i id="dot4">4</i><i id="dot5">5</i><i id="dot6">6</i></div><div class="track"><div id="pbar"></div></div></div>
+  <audio id="vo" class="clip" src="assets/voice.wav" data-start="0" data-duration="53.412" data-track-index="5"></audio>
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#s0-cam",{scale:1.0},{scale:1.12,duration:7.374,ease:"sine.inOut"},0);
+tl.from("#s0-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},0.05);
+tl.from("#s0-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},0.15);
+tl.from("#s0-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},0);
+tl.from("#s0-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},0.5);
+tl.set("#s0-c0",{display:"inline"},0.3);
+tl.set("#s0-c1",{display:"inline"},0.464);
+tl.set("#s0-c2",{display:"inline"},0.628);
+tl.set("#s0-c3",{display:"inline"},0.792);
+tl.set("#s0-c4",{display:"inline"},0.956);
+tl.set("#s0-c5",{display:"inline"},1.12);
+tl.set("#s0-c6",{display:"inline"},1.284);
+tl.set("#s0-c7",{display:"inline"},1.448);
+tl.set("#s0-c8",{display:"inline"},1.612);
+tl.set("#s0-c9",{display:"inline"},1.776);
+tl.set("#s0-c10",{display:"inline"},1.94);
+tl.set("#s0-c11",{display:"inline"},2.104);
+tl.set("#s0-c12",{display:"inline"},2.268);
+tl.set("#s0-c13",{display:"inline"},2.432);
+tl.set("#s0-c14",{display:"inline"},2.596);
+tl.set("#s0-c15",{display:"inline"},2.76);
+tl.set("#s0-c16",{display:"inline"},2.924);
+tl.set("#s0-c17",{display:"inline"},3.088);
+tl.set("#s0-c18",{display:"inline"},3.252);
+tl.set("#s0-c19",{display:"inline"},3.416);
+tl.set("#s0-c20",{display:"inline"},3.58);
+tl.set("#s0-c21",{display:"inline"},3.744);
+tl.set("#s0-c22",{display:"inline"},3.908);
+tl.set("#s0-c23",{display:"inline"},4.072);
+tl.set("#s0-c24",{display:"inline"},4.236);
+tl.set("#s0-c25",{display:"inline"},4.4);
+tl.set("#s0-c26",{display:"inline"},4.564);
+tl.set("#s0-c27",{display:"inline"},4.728);
+tl.set("#s0-c28",{display:"inline"},4.892);
+tl.set("#s0-c29",{display:"inline"},5.056);
+tl.set("#s0-c30",{display:"inline"},5.22);
+tl.set("#s0-c31",{display:"inline"},5.384);
+tl.set("#s0-c32",{display:"inline"},5.548);
+tl.set("#s0-c33",{display:"inline"},5.712);
+tl.set("#s0-c34",{display:"inline"},5.876);
+tl.set("#s0-c35",{display:"inline"},6.04);
+tl.set("#s0-c36",{display:"inline"},6.204);
+tl.set("#s0-c37",{display:"inline"},6.368);
+tl.to("#s0-caret",{opacity:0,duration:0.01},7.074);
+tl.to("#s0",{opacity:0,duration:0.25},7.124);
+tl.fromTo("#s1-cam",{scale:1.12},{scale:1.0,duration:5.312,ease:"sine.inOut"},7.374);
+tl.from("#s1-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},7.4239999999999995);
+tl.from("#s1-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},7.524);
+tl.from("#s1-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},7.374);
+tl.from("#s1-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},7.874);
+tl.set("#s1-c0",{display:"inline"},7.524);
+tl.set("#s1-c1",{display:"inline"},7.668);
+tl.set("#s1-c2",{display:"inline"},7.813);
+tl.set("#s1-c3",{display:"inline"},7.957);
+tl.set("#s1-c4",{display:"inline"},8.101);
+tl.set("#s1-c5",{display:"inline"},8.245);
+tl.set("#s1-c6",{display:"inline"},8.39);
+tl.set("#s1-c7",{display:"inline"},8.534);
+tl.set("#s1-c8",{display:"inline"},8.678);
+tl.set("#s1-c9",{display:"inline"},8.823);
+tl.set("#s1-c10",{display:"inline"},8.967);
+tl.set("#s1-c11",{display:"inline"},9.111);
+tl.set("#s1-c12",{display:"inline"},9.255);
+tl.set("#s1-c13",{display:"inline"},9.4);
+tl.set("#s1-c14",{display:"inline"},9.544);
+tl.set("#s1-c15",{display:"inline"},9.688);
+tl.set("#s1-c16",{display:"inline"},9.833);
+tl.set("#s1-c17",{display:"inline"},9.977);
+tl.set("#s1-c18",{display:"inline"},10.121);
+tl.set("#s1-c19",{display:"inline"},10.266);
+tl.set("#s1-c20",{display:"inline"},10.41);
+tl.set("#s1-c21",{display:"inline"},10.554);
+tl.set("#s1-c22",{display:"inline"},10.698);
+tl.set("#s1-c23",{display:"inline"},10.843);
+tl.set("#s1-c24",{display:"inline"},10.987);
+tl.set("#s1-c25",{display:"inline"},11.131);
+tl.set("#s1-c26",{display:"inline"},11.276);
+tl.set("#s1-c27",{display:"inline"},11.42);
+tl.set("#s1-c28",{display:"inline"},11.564);
+tl.set("#s1-c29",{display:"inline"},11.708);
+tl.set("#s1-c30",{display:"inline"},11.853);
+tl.to("#s1-caret",{opacity:0,duration:0.01},12.386);
+tl.to("#s1",{opacity:0,duration:0.25},12.436);
+tl.fromTo("#s2-cam",{scale:1.0},{scale:1.12,duration:7.9,ease:"sine.inOut"},12.686);
+tl.from("#s2-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},12.736);
+tl.from("#s2-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},12.836);
+tl.from("#s2-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},12.686);
+tl.from("#s2-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},13.186);
+tl.set("#s2-c0",{display:"inline"},12.836);
+tl.set("#s2-c1",{display:"inline"},13.021);
+tl.set("#s2-c2",{display:"inline"},13.206);
+tl.set("#s2-c3",{display:"inline"},13.392);
+tl.set("#s2-c4",{display:"inline"},13.577);
+tl.set("#s2-c5",{display:"inline"},13.762);
+tl.set("#s2-c6",{display:"inline"},13.947);
+tl.set("#s2-c7",{display:"inline"},14.133);
+tl.set("#s2-c8",{display:"inline"},14.318);
+tl.set("#s2-c9",{display:"inline"},14.503);
+tl.set("#s2-c10",{display:"inline"},14.688);
+tl.set("#s2-c11",{display:"inline"},14.874);
+tl.set("#s2-c12",{display:"inline"},15.059);
+tl.set("#s2-c13",{display:"inline"},15.244);
+tl.set("#s2-c14",{display:"inline"},15.429);
+tl.set("#s2-c15",{display:"inline"},15.615);
+tl.set("#s2-c16",{display:"inline"},15.8);
+tl.set("#s2-c17",{display:"inline"},15.985);
+tl.set("#s2-c18",{display:"inline"},16.17);
+tl.set("#s2-c19",{display:"inline"},16.356);
+tl.set("#s2-c20",{display:"inline"},16.541);
+tl.set("#s2-c21",{display:"inline"},16.726);
+tl.set("#s2-c22",{display:"inline"},16.911);
+tl.set("#s2-c23",{display:"inline"},17.097);
+tl.set("#s2-c24",{display:"inline"},17.282);
+tl.set("#s2-c25",{display:"inline"},17.467);
+tl.set("#s2-c26",{display:"inline"},17.652);
+tl.set("#s2-c27",{display:"inline"},17.838);
+tl.set("#s2-c28",{display:"inline"},18.023);
+tl.set("#s2-c29",{display:"inline"},18.208);
+tl.set("#s2-c30",{display:"inline"},18.393);
+tl.set("#s2-c31",{display:"inline"},18.579);
+tl.set("#s2-c32",{display:"inline"},18.764);
+tl.set("#s2-c33",{display:"inline"},18.949);
+tl.set("#s2-c34",{display:"inline"},19.134);
+tl.set("#s2-c35",{display:"inline"},19.32);
+tl.set("#s2-c36",{display:"inline"},19.505);
+tl.to("#s2-caret",{opacity:0,duration:0.01},20.286);
+tl.to("#s2",{opacity:0,duration:0.25},20.336);
+tl.fromTo("#s3-cam",{scale:1.12},{scale:1.0,duration:7.305,ease:"sine.inOut"},20.586);
+tl.from("#s3-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},20.636);
+tl.from("#s3-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},20.735999999999997);
+tl.from("#s3-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},20.586);
+tl.from("#s3-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},21.086);
+tl.set("#s3-c0",{display:"inline"},20.736);
+tl.set("#s3-c1",{display:"inline"},20.927);
+tl.set("#s3-c2",{display:"inline"},21.118);
+tl.set("#s3-c3",{display:"inline"},21.309);
+tl.set("#s3-c4",{display:"inline"},21.5);
+tl.set("#s3-c5",{display:"inline"},21.692);
+tl.set("#s3-c6",{display:"inline"},21.883);
+tl.set("#s3-c7",{display:"inline"},22.074);
+tl.set("#s3-c8",{display:"inline"},22.265);
+tl.set("#s3-c9",{display:"inline"},22.456);
+tl.set("#s3-c10",{display:"inline"},22.647);
+tl.set("#s3-c11",{display:"inline"},22.838);
+tl.set("#s3-c12",{display:"inline"},23.029);
+tl.set("#s3-c13",{display:"inline"},23.22);
+tl.set("#s3-c14",{display:"inline"},23.412);
+tl.set("#s3-c15",{display:"inline"},23.603);
+tl.set("#s3-c16",{display:"inline"},23.794);
+tl.set("#s3-c17",{display:"inline"},23.985);
+tl.set("#s3-c18",{display:"inline"},24.176);
+tl.set("#s3-c19",{display:"inline"},24.367);
+tl.set("#s3-c20",{display:"inline"},24.558);
+tl.set("#s3-c21",{display:"inline"},24.749);
+tl.set("#s3-c22",{display:"inline"},24.94);
+tl.set("#s3-c23",{display:"inline"},25.132);
+tl.set("#s3-c24",{display:"inline"},25.323);
+tl.set("#s3-c25",{display:"inline"},25.514);
+tl.set("#s3-c26",{display:"inline"},25.705);
+tl.set("#s3-c27",{display:"inline"},25.896);
+tl.set("#s3-c28",{display:"inline"},26.087);
+tl.set("#s3-c29",{display:"inline"},26.278);
+tl.set("#s3-c30",{display:"inline"},26.469);
+tl.set("#s3-c31",{display:"inline"},26.66);
+tl.set("#s3-c32",{display:"inline"},26.851);
+tl.to("#s3-caret",{opacity:0,duration:0.01},27.591);
+tl.to("#s3",{opacity:0,duration:0.25},27.641);
+tl.fromTo("#s4-cam",{scale:1.0},{scale:1.12,duration:8.758,ease:"sine.inOut"},27.891);
+tl.from("#s4-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},27.941);
+tl.from("#s4-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},28.040999999999997);
+tl.from("#s4-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},27.891);
+tl.from("#s4-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},28.391);
+tl.set("#s4-c0",{display:"inline"},28.041);
+tl.set("#s4-c1",{display:"inline"},28.223);
+tl.set("#s4-c2",{display:"inline"},28.405);
+tl.set("#s4-c3",{display:"inline"},28.587);
+tl.set("#s4-c4",{display:"inline"},28.769);
+tl.set("#s4-c5",{display:"inline"},28.951);
+tl.set("#s4-c6",{display:"inline"},29.133);
+tl.set("#s4-c7",{display:"inline"},29.315);
+tl.set("#s4-c8",{display:"inline"},29.497);
+tl.set("#s4-c9",{display:"inline"},29.679);
+tl.set("#s4-c10",{display:"inline"},29.861);
+tl.set("#s4-c11",{display:"inline"},30.043);
+tl.set("#s4-c12",{display:"inline"},30.225);
+tl.set("#s4-c13",{display:"inline"},30.407);
+tl.set("#s4-c14",{display:"inline"},30.589);
+tl.set("#s4-c15",{display:"inline"},30.771);
+tl.set("#s4-c16",{display:"inline"},30.953);
+tl.set("#s4-c17",{display:"inline"},31.135);
+tl.set("#s4-c18",{display:"inline"},31.317);
+tl.set("#s4-c19",{display:"inline"},31.499);
+tl.set("#s4-c20",{display:"inline"},31.681);
+tl.set("#s4-c21",{display:"inline"},31.863);
+tl.set("#s4-c22",{display:"inline"},32.045);
+tl.set("#s4-c23",{display:"inline"},32.227);
+tl.set("#s4-c24",{display:"inline"},32.409);
+tl.set("#s4-c25",{display:"inline"},32.591);
+tl.set("#s4-c26",{display:"inline"},32.773);
+tl.set("#s4-c27",{display:"inline"},32.955);
+tl.set("#s4-c28",{display:"inline"},33.137);
+tl.set("#s4-c29",{display:"inline"},33.319);
+tl.set("#s4-c30",{display:"inline"},33.501);
+tl.set("#s4-c31",{display:"inline"},33.683);
+tl.set("#s4-c32",{display:"inline"},33.865);
+tl.set("#s4-c33",{display:"inline"},34.046);
+tl.set("#s4-c34",{display:"inline"},34.228);
+tl.set("#s4-c35",{display:"inline"},34.41);
+tl.set("#s4-c36",{display:"inline"},34.592);
+tl.set("#s4-c37",{display:"inline"},34.774);
+tl.set("#s4-c38",{display:"inline"},34.956);
+tl.set("#s4-c39",{display:"inline"},35.138);
+tl.set("#s4-c40",{display:"inline"},35.32);
+tl.set("#s4-c41",{display:"inline"},35.502);
+tl.to("#s4-caret",{opacity:0,duration:0.01},36.349);
+tl.to("#s4",{opacity:0,duration:0.25},36.399);
+tl.fromTo("#s5-cam",{scale:1.12},{scale:1.0,duration:7.659,ease:"sine.inOut"},36.649);
+tl.from("#s5-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},36.699);
+tl.from("#s5-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},36.799);
+tl.from("#s5-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},36.649);
+tl.from("#s5-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},37.149);
+tl.set("#s5-c0",{display:"inline"},36.799);
+tl.set("#s5-c1",{display:"inline"},36.994);
+tl.set("#s5-c2",{display:"inline"},37.189);
+tl.set("#s5-c3",{display:"inline"},37.384);
+tl.set("#s5-c4",{display:"inline"},37.579);
+tl.set("#s5-c5",{display:"inline"},37.774);
+tl.set("#s5-c6",{display:"inline"},37.969);
+tl.set("#s5-c7",{display:"inline"},38.164);
+tl.set("#s5-c8",{display:"inline"},38.36);
+tl.set("#s5-c9",{display:"inline"},38.555);
+tl.set("#s5-c10",{display:"inline"},38.75);
+tl.set("#s5-c11",{display:"inline"},38.945);
+tl.set("#s5-c12",{display:"inline"},39.14);
+tl.set("#s5-c13",{display:"inline"},39.335);
+tl.set("#s5-c14",{display:"inline"},39.53);
+tl.set("#s5-c15",{display:"inline"},39.725);
+tl.set("#s5-c16",{display:"inline"},39.92);
+tl.set("#s5-c17",{display:"inline"},40.115);
+tl.set("#s5-c18",{display:"inline"},40.31);
+tl.set("#s5-c19",{display:"inline"},40.505);
+tl.set("#s5-c20",{display:"inline"},40.7);
+tl.set("#s5-c21",{display:"inline"},40.895);
+tl.set("#s5-c22",{display:"inline"},41.09);
+tl.set("#s5-c23",{display:"inline"},41.286);
+tl.set("#s5-c24",{display:"inline"},41.481);
+tl.set("#s5-c25",{display:"inline"},41.676);
+tl.set("#s5-c26",{display:"inline"},41.871);
+tl.set("#s5-c27",{display:"inline"},42.066);
+tl.set("#s5-c28",{display:"inline"},42.261);
+tl.set("#s5-c29",{display:"inline"},42.456);
+tl.set("#s5-c30",{display:"inline"},42.651);
+tl.set("#s5-c31",{display:"inline"},42.846);
+tl.set("#s5-c32",{display:"inline"},43.041);
+tl.set("#s5-c33",{display:"inline"},43.236);
+tl.to("#s5-caret",{opacity:0,duration:0.01},44.008);
+tl.to("#s5",{opacity:0,duration:0.25},44.058);
+tl.fromTo("#s6-cam",{scale:1.0},{scale:1.12,duration:9.104,ease:"sine.inOut"},44.308);
+tl.from("#s6-badge",{scale:0,rotation:-90,duration:0.45,ease:"back.out(2)"},44.358);
+tl.from("#s6-title",{x:-60,opacity:0,duration:0.4,ease:"power3.out"},44.458);
+tl.from("#s6-cam",{opacity:0,y:80,duration:0.45,ease:"power2.out"},44.308);
+tl.from("#s6-chip",{opacity:0,y:30,duration:0.35,ease:"power2.out"},44.808);
+tl.set("#s6-c0",{display:"inline"},44.458);
+tl.set("#s6-c1",{display:"inline"},44.609);
+tl.set("#s6-c2",{display:"inline"},44.761);
+tl.set("#s6-c3",{display:"inline"},44.912);
+tl.set("#s6-c4",{display:"inline"},45.064);
+tl.set("#s6-c5",{display:"inline"},45.215);
+tl.set("#s6-c6",{display:"inline"},45.367);
+tl.set("#s6-c7",{display:"inline"},45.518);
+tl.set("#s6-c8",{display:"inline"},45.67);
+tl.set("#s6-c9",{display:"inline"},45.821);
+tl.set("#s6-c10",{display:"inline"},45.973);
+tl.set("#s6-c11",{display:"inline"},46.124);
+tl.set("#s6-c12",{display:"inline"},46.276);
+tl.set("#s6-c13",{display:"inline"},46.427);
+tl.set("#s6-c14",{display:"inline"},46.579);
+tl.set("#s6-c15",{display:"inline"},46.73);
+tl.set("#s6-c16",{display:"inline"},46.882);
+tl.set("#s6-c17",{display:"inline"},47.033);
+tl.set("#s6-c18",{display:"inline"},47.185);
+tl.set("#s6-c19",{display:"inline"},47.336);
+tl.set("#s6-c20",{display:"inline"},47.488);
+tl.set("#s6-c21",{display:"inline"},47.639);
+tl.set("#s6-c22",{display:"inline"},47.791);
+tl.set("#s6-c23",{display:"inline"},47.942);
+tl.set("#s6-c24",{display:"inline"},48.094);
+tl.set("#s6-c25",{display:"inline"},48.245);
+tl.set("#s6-c26",{display:"inline"},48.397);
+tl.set("#s6-c27",{display:"inline"},48.548);
+tl.set("#s6-c28",{display:"inline"},48.7);
+tl.set("#s6-c29",{display:"inline"},48.851);
+tl.set("#s6-c30",{display:"inline"},49.003);
+tl.set("#s6-c31",{display:"inline"},49.154);
+tl.set("#s6-c32",{display:"inline"},49.306);
+tl.set("#s6-c33",{display:"inline"},49.457);
+tl.set("#s6-c34",{display:"inline"},49.609);
+tl.set("#s6-c35",{display:"inline"},49.76);
+tl.set("#s6-c36",{display:"inline"},49.912);
+tl.set("#s6-c37",{display:"inline"},50.063);
+tl.set("#s6-c38",{display:"inline"},50.215);
+tl.set("#s6-c39",{display:"inline"},50.366);
+tl.set("#s6-c40",{display:"inline"},50.518);
+tl.set("#s6-c41",{display:"inline"},50.669);
+tl.set("#s6-c42",{display:"inline"},50.821);
+tl.set("#s6-c43",{display:"inline"},50.972);
+tl.set("#s6-c44",{display:"inline"},51.124);
+tl.set("#s6-c45",{display:"inline"},51.275);
+tl.set("#s6-c46",{display:"inline"},51.427);
+tl.set("#s6-c47",{display:"inline"},51.578);
+tl.to("#s6-caret",{opacity:0,duration:0.01},52.362);
+tl.to("#s6",{opacity:0,duration:0.25},53.162);
+tl.from("#s0-clock",{scale:0.6,opacity:0,duration:0.5,ease:"back.out(2)"},1.5);
+tl.to("#s0-clock",{color:"#ff5a5f",duration:0.2,yoyo:true,repeat:3},2.5);
+tl.to("#s1-ok",{opacity:1,scale:1,duration:0.35,ease:"back.out(2)"},10.724);
+tl.to("#s2-conn",{backgroundColor:"#3b82f6",color:"#fff",duration:0.25},14.036);
+tl.to("#s2-dd",{boxShadow:"0 0 0 6px #3b82f6",duration:0.3},15.636);
+tl.to("#s2-on",{opacity:1,duration:0.3},18.036);
+tl.to("#s3-time",{boxShadow:"0 0 0 6px #22c55e",scale:1.06,duration:0.35},24.336);
+tl.to("#s4-send",{backgroundColor:"#22c55e",scale:1.08,duration:0.3},35.441);
+tl.from("#s5-noti",{y:-220,opacity:0,duration:0.5,ease:"back.out(1.6)"},38.399);
+tl.to("#s5-punch",{scale:0.9,duration:0.15,yoyo:true,repeat:1},41.399);
+tl.to("#s5-done",{opacity:1,scale:1,duration:0.35,ease:"back.out(2)"},41.799);
+tl.from("#s6-a",{x:-80,opacity:0,duration:0.35},44.858);
+tl.from("#s6-b",{x:-80,opacity:0,duration:0.35},46.058);
+tl.from("#s6-c",{x:-80,opacity:0,duration:0.35},47.458);
+tl.from("#s6-f",{scale:0.5,opacity:0,duration:0.45,ease:"back.out(2)"},49.258);
+tl.set("#s4-t0",{opacity:1},28.941);
+tl.set("#s4-t1",{opacity:1},29.128);
+tl.set("#s4-t2",{opacity:1},29.316);
+tl.set("#s4-t3",{opacity:1},29.503);
+tl.set("#s4-t4",{opacity:1},29.691);
+tl.set("#s4-t5",{opacity:1},29.878);
+tl.set("#s4-t6",{opacity:1},30.066);
+tl.set("#s4-t7",{opacity:1},30.253);
+tl.set("#s4-t8",{opacity:1},30.441);
+tl.set("#s4-t9",{opacity:1},30.628);
+tl.set("#s4-t10",{opacity:1},30.816);
+tl.set("#s4-t11",{opacity:1},31.003);
+tl.set("#s4-t12",{opacity:1},31.191);
+tl.set("#s4-t13",{opacity:1},31.378);
+tl.set("#s4-t14",{opacity:1},31.566);
+tl.set("#s4-t15",{opacity:1},31.753);
+tl.set("#s4-t16",{opacity:1},31.941);
+tl.set("#s4-t17",{opacity:1},32.129);
+tl.set("#s4-t18",{opacity:1},32.316);
+tl.set("#s4-t19",{opacity:1},32.504);
+tl.set("#s4-t20",{opacity:1},32.691);
+tl.set("#s4-t21",{opacity:1},32.879);
+tl.set("#s4-t22",{opacity:1},33.066);
+tl.set("#s4-t23",{opacity:1},33.254);
+tl.set("#s4-t24",{opacity:1},33.441);
+tl.set("#s4-t25",{opacity:1},33.629);
+tl.set("#s4-t26",{opacity:1},33.816);
+tl.set("#s4-t27",{opacity:1},34.004);
+tl.set("#s4-t28",{opacity:1},34.191);
+tl.set("#s4-t29",{opacity:1},34.379);
+tl.set("#s4-t30",{opacity:1},34.566);
+tl.set("#s4-t31",{opacity:1},34.754);
+tl.fromTo("#pbar",{scaleX:0},{scaleX:1,duration:53.412,ease:"none"},0);
+tl.to("#dot1",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},7.374);
+tl.to("#dot1",{scale:1,duration:0.2},7.624);
+tl.to("#dot2",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},12.686);
+tl.to("#dot2",{scale:1,duration:0.2},12.936);
+tl.to("#dot3",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},20.586);
+tl.to("#dot3",{scale:1,duration:0.2},20.836);
+tl.to("#dot4",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},27.891);
+tl.to("#dot4",{scale:1,duration:0.2},28.141);
+tl.to("#dot5",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},36.649);
+tl.to("#dot5",{scale:1,duration:0.2},36.899);
+tl.to("#dot6",{backgroundColor:"#3b82f6",scale:1.25,duration:0.25},44.308);
+tl.to("#dot6",{scale:1,duration:0.2},44.558);
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>

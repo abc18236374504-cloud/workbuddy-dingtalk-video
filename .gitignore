@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+*.key
+*key*.txt
+*secret*
+*token*
+.hyperframes/
+project/assets/
+project/renders/
+*.log
+.DS_Store
